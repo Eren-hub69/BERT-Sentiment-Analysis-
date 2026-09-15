@@ -3,12 +3,12 @@ import torch
 
 # Load trained model
 model = AutoModelForSequenceClassification.from_pretrained(
-    "./final_model"
+    "Erenkass/bert-imdb-sentiment"
 )
 
 # Load correct BERT tokenizer
 tokenizer = AutoTokenizer.from_pretrained(
-    "bert-base-uncased"
+    "Erenkass/bert-imdb-sentiment"
 )
 
 # Use GPU if available
@@ -37,12 +37,22 @@ def predict_sentiment(text):
 
         outputs = model(**inputs)
 
+    probabilities=torch.softmax(outputs.logits,dim=1)
+
     prediction = torch.argmax(outputs.logits, dim=1).item()
 
+    confidence=probabilities[0][prediction].item()
+
+
+
     if prediction == 1:
-        return "Positive"
+        sentiment="Positive"
     else:
-        return "Negative"
+        sentiment= "Negative"
+
+    return sentiment , confidence
+
+    
 
 
 # Test sentences
